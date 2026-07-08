@@ -1,0 +1,13 @@
+venv/
+
+__pycache__/
+
+.ipynb_checkpoints/
+
+*.pyc
+
+# Ignore downloaded GEO datasets
+data/raw/
+data/metadata/
+src/data/raw/
+src/data/metadata/
