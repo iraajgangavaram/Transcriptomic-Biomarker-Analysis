@@ -9,5 +9,3 @@ __pycache__/
 # Ignore downloaded GEO datasets
 data/raw/
 data/metadata/
-src/data/raw/
-src/data/metadata/
