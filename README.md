@@ -201,18 +201,48 @@ Generated outputs:
 
 # Interactive Dashboard
 
-A Streamlit dashboard was created to provide an interactive view of the analysis results.
+A Streamlit dashboard was developed to provide an interactive overview of the transcriptomic analysis workflow.
 
-The dashboard displays:
+The dashboard integrates:
 
-- Differential expression results
-- Volcano plot
-- Heatmap
-- GO enrichment pathways
-- KEGG pathways
-- Protein interaction network
-- Hub genes
+- Quality control results
+- Principal Component Analysis (PCA)
+- Differential expression analysis
+- Volcano plot visualisation
+- GO pathway enrichment
+- Protein interaction network analysis
+- Hub gene identification
 
+
+## Results Visualisation
+
+
+### Principal Component Analysis (PCA)
+
+PCA was used to evaluate sample separation between Alzheimer's disease and control samples.
+
+![PCA Plot](screenshots/pca_plot.png)
+
+
+### Differential Expression Analysis
+
+The volcano plot highlights genes showing differences in expression between Alzheimer's disease and control samples.
+
+![Volcano Plot](screenshots/volcano_plot.png)
+
+
+### Functional Enrichment Analysis
+
+GO enrichment analysis identifies biological processes associated with transcriptional changes.
+
+![GO Enrichment](screenshots/go_enrichment_barplot.png)
+
+
+### Protein Interaction Network
+
+STRING-based network analysis was used to identify relationships between candidate genes and potential regulatory hub genes.
+
+![Interaction Network](screenshots/interaction_network.png)
 
 ## Running the Dashboard
 
