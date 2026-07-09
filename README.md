@@ -1,4 +1,4 @@
-# Integrative Transcriptomic Analysis to Identify Disease Biomarkers and Regulatory Pathways
+# An End-to-End Python Transcriptomics Pipeline for Alzheimer's Disease Biomarker Discovery
 
 ## Overview
 
