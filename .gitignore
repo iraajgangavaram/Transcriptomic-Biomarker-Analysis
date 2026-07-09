@@ -6,6 +6,4 @@ __pycache__/
 
 *.pyc
 
-# Ignore downloaded GEO datasets
 data/raw/
-data/metadata/
