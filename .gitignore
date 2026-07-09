@@ -1,9 +1,12 @@
-venv/
+# Raw data
+data/raw/
 
+# Large processed data
+data/processed/
+
+# Python files
 __pycache__/
-
-.ipynb_checkpoints/
-
 *.pyc
 
-data/raw/
+# Jupyter
+.ipynb_checkpoints/
