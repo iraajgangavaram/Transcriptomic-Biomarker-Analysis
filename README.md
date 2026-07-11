@@ -244,6 +244,18 @@ STRING-based network analysis was used to identify relationships between candida
 
 ![Interaction Network](screenshots/interaction_network.png)
 
+## Biological Interpretation
+
+This analysis explored transcriptomic differences between Alzheimer's disease and healthy control brain tissue to identify genes and biological pathways potentially associated with disease pathology.
+
+Differential expression analysis identified genes exhibiting altered expression between the two groups. These genes were subsequently investigated using Gene Ontology (GO) and KEGG pathway enrichment analyses to identify biological processes and signalling pathways that may be affected in Alzheimer's disease.
+
+Protein-protein interaction analysis using the STRING database revealed several highly connected candidate hub genes within the interaction network. Genes with high network centrality may play important regulatory roles by coordinating multiple biological interactions and therefore represent potential targets for further experimental investigation.
+
+Because the dataset consisted of only seven samples (3 Alzheimer's disease and 4 healthy controls), the results should be considered exploratory rather than definitive. To improve biological interpretation, pathway enrichment analyses were performed using the top-ranked differentially expressed genes rather than relying solely on strict statistical significance thresholds.
+
+Overall, this project demonstrates a complete computational workflow for transforming raw RNA-seq data into biologically interpretable results. The pipeline integrates transcriptomic analysis, functional enrichment, and systems biology approaches to generate hypotheses about molecular mechanisms underlying Alzheimer's disease and illustrates the practical application of bioinformatics methods to publicly available genomic datasets.
+
 ## Running the Dashboard
 
 Install requirements:
