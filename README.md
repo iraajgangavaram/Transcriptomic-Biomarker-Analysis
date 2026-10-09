@@ -136,7 +136,7 @@ Outputs:
 
 ## 4. Functional Enrichment Analysis
 
-Differentially ranked genes were analysed to identify affected biological pathways.
+The top-ranked differentially expressed genes were analysed to identify affected biological pathways.
 
 
 Analyses performed:
@@ -262,55 +262,33 @@ Install requirements:
 
 ```bash
 pip install -r requirements.txt
-
-run streamlit run src/dashboard.py
+streamlit run src/dashboard.py
 ```
-## Repository Structure 
-Transcriptomic-Biomarker-Analysis/
 
+## Repository Structure
+
+```text
+Transcriptomic-Biomarker-Analysis/
 ├── data/
-│   ├── metadata/
-│   ├── processed/
-│   └── raw/
-│
-├── figures/
-│   ├── Quality control plots
-│   ├── Differential expression plots
-│   ├── Enrichment plots
-│   └── Network visualisations
-│
-├── results/
-│   ├── Differential expression results
-│   ├── Enrichment results
-│   ├── STRING network results
-│   └── Hub gene analysis
-│
-├── src/
-│   ├── Data processing scripts
-│   ├── Statistical analysis scripts
-│   ├── Network analysis scripts
-│   └── Dashboard application
-│
+│   ├── metadata/     # sample metadata and group labels
+│   ├── processed/    # processed expression matrix
+│   └── raw/          # downloaded counts (not tracked; see src/download_data.py)
+├── figures/          # QC, differential expression, enrichment and network plots
+├── notebooks/        # quality control notebook
+├── results/          # differential expression, enrichment, STRING and hub gene tables
+├── screenshots/      # images used in this README
+├── src/              # pipeline scripts and Streamlit dashboard
+│   └── archive/      # earlier exploratory scripts no longer part of the pipeline
 ├── requirements.txt
 └── README.md
+```
 
 ## Technologies Used
-Programming
-Python
-Data Analysis
-pandas
-numpy
-scipy
-statsmodels
-Bioinformatics
-GEO datasets
-gseapy
-STRING database
-mygene
-Visualisation
-matplotlib
-networkx
-Streamlit
+
+- **Programming:** Python
+- **Data analysis:** pandas, numpy, scipy, statsmodels
+- **Bioinformatics:** GEO datasets, gseapy, STRING database, mygene
+- **Visualisation:** matplotlib, networkx, Streamlit
 
 ## Limitations
 
@@ -318,21 +296,21 @@ Due to the small number of available samples in the dataset, this project focuse
 
 Future improvements include:
 
-Implementing DESeq2 or edgeR for RNA-seq differential expression
-Increasing sample size through additional datasets
-External biomarker validation
-Integration with clinical metadata
-Machine learning-based biomarker prediction
+- Implementing DESeq2 or edgeR for RNA-seq differential expression
+- Increasing sample size through additional datasets
+- External biomarker validation
+- Integration with clinical metadata
+- Machine learning-based biomarker prediction
 
 ## Future Extensions
 
 Potential extensions of this project include:
 
-Multi-dataset validation
-Survival analysis
-Single-cell transcriptomics integration
-Machine learning classification models
-Drug-target interaction analysis
+- Multi-dataset validation
+- Survival analysis
+- Single-cell transcriptomics integration
+- Machine learning classification models
+- Drug-target interaction analysis
 
 ## Author
 
