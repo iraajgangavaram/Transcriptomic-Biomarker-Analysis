@@ -112,6 +112,13 @@ def differential_expression(expression, metadata):
         )
 
 
+        # With zero variance in both groups the t statistic is infinite and the
+        # p-value is exactly 0 (e.g. counts 2,2,2 vs 0,0,0,0). That is a
+        # degenerate test, not evidence, so such genes are treated as untestable.
+        if disease_values.std(ddof=1) == 0 and control_values.std(ddof=1) == 0:
+            pvalue = np.nan
+
+
         results.append(
             [
                 gene,
@@ -133,8 +140,14 @@ def differential_expression(expression, metadata):
 
     # Multiple testing correction
 
-    results["padj"] = multipletests(
-        results["pvalue"],
+    # Genes with no variance in either group give NaN p-values. NaNs must be
+    # excluded before correction (statsmodels propagates a single NaN to every
+    # adjusted p-value); untestable genes keep padj = NaN and are not counted
+    # in the number of tests.
+    results["padj"] = np.nan
+    testable = results["pvalue"].notna()
+    results.loc[testable, "padj"] = multipletests(
+        results.loc[testable, "pvalue"],
         method="fdr_bh"
     )[1]
 

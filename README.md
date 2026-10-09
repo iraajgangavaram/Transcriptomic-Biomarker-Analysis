@@ -22,7 +22,7 @@ The workflow integrates:
 
 **Which genes and regulatory pathways are altered in Alzheimer's disease compared with healthy brain tissue?**
 
-This project aims to identify candidate biomarkers and biological mechanisms involved in disease progression using computational transcriptomics approaches.
+This project builds a workflow for exploring candidate genes and pathways in disease using computational transcriptomics. With only seven samples it generates hypotheses at most; it does not establish biomarkers.
 
 
 # Dataset
@@ -131,7 +131,7 @@ Outputs:
 
 - Differential expression results
 - Ranked gene list
-- Candidate significant genes
+- Genes ranked by p-value (none pass FDR < 0.05; see Result status below)
 
 
 ## 4. Functional Enrichment Analysis
@@ -289,6 +289,16 @@ Transcriptomic-Biomarker-Analysis/
 - **Data analysis:** pandas, numpy, scipy, statsmodels
 - **Bioinformatics:** GEO datasets, gseapy, STRING database, mygene
 - **Visualisation:** matplotlib, networkx, Streamlit
+
+## Result status and known issues
+
+The differential expression step (`src/differential_expression.py`) was corrected after the first version of this project:
+
+- **Multiple-testing bug fixed.** The 6,534 genes with undefined p-values (identical values in all samples) were passed to the Benjamini-Hochberg correction, which turned *every* adjusted p-value into NaN. NaNs are now excluded before correction.
+- **Degenerate tests removed.** Genes with zero variance in both groups (for example counts 2,2,2 versus 0,0,0,0) gave a t-test p-value of exactly 0 and appeared as the most significant genes. They are now treated as untestable (38 genes).
+- **Corrected result:** of 52,253 testable genes, 1,548 have an unadjusted p < 0.05, but **none pass FDR < 0.05 (smallest adjusted p = 0.91)**. With 3 versus 4 samples there is very little statistical power, so this dataset does not support calling any gene a biomarker.
+
+The enrichment, STRING network, hub-gene and heatmap outputs in `results/` and `figures/` were generated from the earlier, uncorrected ranking (the "top 200 by adjusted p-value" selection was effectively arbitrary while adjusted p-values were NaN). They should be regenerated with `src/gene_annotation.py`, `go_enrichment.py`, `kegg_enrichment.py`, `string_network.py` and `heatmap.py` (these need internet access) before being interpreted, and any ranking of genes should be described as exploratory.
 
 ## Limitations
 
