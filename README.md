@@ -113,6 +113,10 @@ src/               pipeline scripts and dashboard
 src/archive/       earlier exploratory scripts
 ```
 
+## Author
+
+Iraaj Gangavaram
+
 ## Licence
 
 MIT. See [LICENSE](LICENSE).
