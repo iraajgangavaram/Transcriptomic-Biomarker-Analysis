@@ -1,210 +1,76 @@
 """
-Phase 7
-Interactive Transcriptomic Analysis Dashboard
+Streamlit dashboard for the GSE163877 analysis.
+
+Run from the repository root:
+    streamlit run src/dashboard.py
 """
 
-import streamlit as st
+from pathlib import Path
+
 import pandas as pd
-from PIL import Image
+import streamlit as st
+
+RESULTS = Path("results")
+FIGURES = Path("figures")
 
 
-# -----------------------------
-# Page Setup
-# -----------------------------
-
-st.set_page_config(
-    page_title="Transcriptomic Biomarker Analysis",
-    layout="wide"
-)
+def show_image(path, caption=None):
+    path = Path(path)
+    if path.exists():
+        st.image(str(path), caption=caption)
+    else:
+        st.info(f"{path} has not been generated.")
 
 
-# -----------------------------
-# Title
-# -----------------------------
+def optional_table(path):
+    path = Path(path)
+    return pd.read_csv(path) if path.exists() else None
 
-st.title(
-    "Integrative Transcriptomic Analysis of Alzheimer's Disease"
-)
 
+st.set_page_config(page_title="GSE163877 RNA-seq analysis", layout="wide")
+st.title("Alzheimer's disease vs control RNA-seq (GSE163877)")
 st.write(
-    """
-    This dashboard presents results from RNA-seq analysis including:
-    
-    - Quality control
-    - Differential expression analysis
-    - Functional enrichment
-    - Protein interaction network analysis
-    """
+    "Middle temporal gyrus, 3 Alzheimer's disease and 4 control samples. "
+    "With this few samples no gene passes FDR < 0.05, so everything below "
+    "is exploratory."
 )
 
+de = pd.read_csv(RESULTS / "differential_expression_results.csv")
+tested = de["padj"].notna()
 
-# -----------------------------
-# Load Results
-# -----------------------------
+st.header("Differential expression")
+col1, col2, col3 = st.columns(3)
+col1.metric("Genes tested", int(tested.sum()))
+col2.metric("Unadjusted p < 0.05", int((de["pvalue"] < 0.05).sum()))
+col3.metric("FDR < 0.05", int((de["padj"] < 0.05).sum()))
+st.caption(f"Smallest adjusted p-value: {de['padj'].min():.2f}")
+show_image(FIGURES / "volcano_plot.png")
 
-@st.cache_data
-def load_data():
+st.header("Quality control")
+show_image(FIGURES / "pca_plot.png", "PCA of samples")
+show_image(FIGURES / "sample_correlation_heatmap.png", "Sample correlation")
 
-    de_results = pd.read_csv(
-        "results/differential_expression_results.csv"
+go = optional_table(RESULTS / "go_enrichment.csv")
+kegg = optional_table(RESULTS / "kegg_enrichment.csv")
+hubs = optional_table(RESULTS / "hub_genes.csv")
+
+if go is None and kegg is None and hubs is None:
+    st.header("Enrichment and network analysis")
+    st.info(
+        "These outputs were removed because they were built from a gene "
+        "ranking produced before the FDR bug was fixed. Rerun "
+        "gene_annotation.py, go_enrichment.py, kegg_enrichment.py and "
+        "string_network.py to regenerate them as exploratory results."
     )
-
-    go_results = pd.read_csv(
-        "results/go_enrichment.csv"
-    )
-
-    kegg_results = pd.read_csv(
-        "results/kegg_enrichment.csv"
-    )
-
-    hub_results = pd.read_csv(
-        "results/hub_genes.csv"
-    )
-
-    return (
-        de_results,
-        go_results,
-        kegg_results,
-        hub_results
-    )
-
-
-de, go, kegg, hubs = load_data()
-
-
-# -----------------------------
-# Differential Expression
-# -----------------------------
-
-st.header(
-    "Differential Expression"
-)
-
-
-col1, col2 = st.columns(2)
-
-
-with col1:
-
-    st.metric(
-        "Genes analysed",
-        len(de)
-    )
-
-
-with col2:
-
-    st.metric(
-        "Significant genes",
-        len(
-            de[
-                de["padj"] < 0.05
-            ]
-        )
-    )
-
-
-st.subheader(
-    "Volcano Plot"
-)
-
-
-st.image(
-    "figures/volcano_plot.png"
-)
-
-
-# -----------------------------
-# PCA
-# -----------------------------
-
-st.header(
-    "Sample Separation"
-)
-
-
-st.image(
-    "figures/pca_plot.png"
-)
-
-
-# -----------------------------
-# Heatmap
-# -----------------------------
-
-st.header(
-    "Top Differentially Expressed Genes"
-)
-
-
-st.image(
-    "figures/top_genes_heatmap.png"
-)
-
-
-# -----------------------------
-# Enrichment
-# -----------------------------
-
-st.header(
-    "Functional Enrichment"
-)
-
-
-tab1, tab2 = st.tabs(
-    [
-        "GO Biological Processes",
-        "KEGG Pathways"
-    ]
-)
-
-
-with tab1:
-
-    st.image(
-        "figures/go_enrichment_barplot.png"
-    )
-
-    st.dataframe(
-        go.head(20)
-    )
-
-
-with tab2:
-
-    st.image(
-        "figures/kegg_enrichment_barplot.png"
-    )
-
-    st.dataframe(
-        kegg.head(20)
-    )
-
-
-# -----------------------------
-# Network Analysis
-# -----------------------------
-
-st.header(
-    "Protein Interaction Network"
-)
-
-
-st.image(
-    "figures/interaction_network.png"
-)
-
-
-st.subheader(
-    "Top Hub Genes"
-)
-
-
-st.dataframe(
-    hubs.head(20)
-)
-
-
-st.success(
-    "Dashboard loaded successfully"
-)
+else:
+    st.header("Functional enrichment (exploratory)")
+    if go is not None:
+        show_image(FIGURES / "go_enrichment_barplot.png")
+        st.dataframe(go.head(20))
+    if kegg is not None:
+        show_image(FIGURES / "kegg_enrichment_barplot.png")
+        st.dataframe(kegg.head(20))
+    if hubs is not None:
+        st.header("Protein interaction network (exploratory)")
+        show_image(FIGURES / "interaction_network.png")
+        st.dataframe(hubs.head(20))
