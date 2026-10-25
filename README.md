@@ -1,10 +1,14 @@
-# Alzheimer's disease RNA-seq (GSE163877): an exploratory analysis with a null result
+# An End-to-End Python Transcriptomics Pipeline for Alzheimer's Disease Biomarker Discovery
 
-I started this project to look for genes and pathways that differ between
-Alzheimer's disease and control brain tissue, using public RNA-seq data from
-GEO. After fixing a multiple-testing bug, the honest answer is that this
-dataset is too small to call any gene differentially expressed. The repository
-now documents that result and the pipeline that produced it.
+A Python pipeline for analysing public RNA-seq data from Alzheimer's disease and
+control brain tissue (GEO GSE163877): quality control, differential expression,
+gene annotation, pathway enrichment, protein interaction networks and an
+interactive dashboard.
+
+When I reviewed the project in October 2026 I found and fixed a multiple-testing
+bug. With the fix, no gene passes the false discovery rate threshold, because 3
+versus 4 samples is too few to detect anything but very large effects. This
+README reports that corrected result and explains what changed.
 
 ## Dataset
 

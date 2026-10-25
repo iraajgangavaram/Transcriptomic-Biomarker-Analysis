@@ -27,8 +27,8 @@ def optional_table(path):
     return pd.read_csv(path) if path.exists() else None
 
 
-st.set_page_config(page_title="GSE163877 RNA-seq analysis", layout="wide")
-st.title("Alzheimer's disease vs control RNA-seq (GSE163877)")
+st.set_page_config(page_title="Transcriptomic Biomarker Analysis", layout="wide")
+st.title("Integrative Transcriptomic Analysis of Alzheimer's Disease")
 st.write(
     "Middle temporal gyrus, 3 Alzheimer's disease and 4 control samples. "
     "With this few samples no gene passes FDR < 0.05, so everything below "
