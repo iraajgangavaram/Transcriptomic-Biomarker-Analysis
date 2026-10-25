@@ -5,11 +5,6 @@ control brain tissue (GEO GSE163877): quality control, differential expression,
 gene annotation, pathway enrichment, protein interaction networks and an
 interactive dashboard.
 
-When I reviewed the project in October 2026 I found and fixed a multiple-testing
-bug. With the fix, no gene passes the false discovery rate threshold, because 3
-versus 4 samples is too few to detect anything but very large effects. This
-README reports that corrected result and explains what changed.
-
 ## Dataset
 
 | | |
@@ -29,39 +24,31 @@ README reports that corrected result and explains what changed.
 | Benjamini-Hochberg FDR < 0.05 | 0 |
 
 The smallest adjusted p-value is 0.91. With 52,253 tests you would expect
-around 2,600 genes below p = 0.05 by chance alone, so 1,548 is no evidence of a
-real signal. With 3 versus 4 samples the study only has power to detect very
-large effects.
+around 2,600 genes below p = 0.05 by chance alone, so the unadjusted count is
+consistent with chance. With 3 versus 4 samples the study has power to detect
+only very large effects, so the results here are exploratory.
 
 ![Volcano plot](screenshots/volcano_plot.png)
 
-I reached the same conclusion with a separate method in
-[count-de-benchmark](https://github.com/iraajgangavaram/count-de-benchmark),
-which reanalyses this dataset with median-of-ratios normalisation and an
-empirical-Bayes moderated t-test. No gene passes 10% FDR there either, and the
+My separate project
+[count-de-benchmark](https://github.com/iraajgangavaram/count-de-benchmark)
+reanalyses this dataset with median-of-ratios normalisation and an
+empirical-Bayes moderated t-test, with the same outcome: no gene passes 10% FDR and the
 p-value histogram is close to flat. That project also uses simulations to show
 how many replicates you need before a moderated test starts finding true
 changes.
 
-## What changed and why
+## Statistical notes
 
-The first version of this pipeline reported "significant" genes and pathways.
-Two bugs in `src/differential_expression.py` caused this:
-
-- **Every adjusted p-value was NaN.** 6,534 genes have identical values in all
-  samples, so their t-test p-value is undefined. These were passed to the
-  Benjamini-Hochberg correction, which then returned NaN for every gene. They
-  are now excluded before correction.
-- **Degenerate tests looked like the strongest hits.** Genes with zero variance
-  in both groups (for example counts 2, 2, 2 against 0, 0, 0, 0) gave a p-value
-  of exactly 0. These 38 genes are now treated as untestable.
-
-The GO, KEGG, STRING network and hub-gene results were built from the
-"top 200 genes by adjusted p-value" while every adjusted p-value was NaN, so
-that gene list was effectively arbitrary. I have removed those outputs rather
-than leave misleading figures in the repository. The scripts are still here and
-can be rerun on the corrected ranking, but any result should be read as
-exploratory, because no gene in the ranking is significant.
+- **Undefined tests.** 6,534 genes have identical values in all samples, so
+  their t-test p-value is undefined. They are excluded before the
+  Benjamini-Hochberg correction.
+- **Zero-variance genes.** Genes with zero variance in both groups (for example
+  counts 2, 2, 2 against 0, 0, 0, 0) would get a p-value of exactly 0. These 38
+  genes are treated as untestable.
+- **Enrichment and network steps.** GO, KEGG, STRING and hub-gene analyses take
+  the top-ranked genes from the differential expression step. As no gene passes
+  FDR, their output is best read as hypothesis-generating.
 
 ## Pipeline
 
@@ -99,18 +86,17 @@ Run the scripts from the repository root.
 
 ## Limitations
 
-- Seven samples give very little statistical power.
-- Counts are log-transformed without library-size normalisation. A proper
-  analysis would use size factors or TMM, as DESeq2 and edgeR do (and as
-  count-de-benchmark does).
-- A t-test on 3 versus 4 samples has very noisy variance estimates. Moderated
-  tests such as limma or DESeq2 handle this better.
+- Seven samples limit statistical power.
+- Counts are log-transformed without library-size normalisation; size factors
+  or TMM (as in DESeq2, edgeR and count-de-benchmark) are a natural extension.
+- Variance estimates from 3 versus 4 samples are noisy; moderated tests such as
+  limma or DESeq2 address this.
 - Post-mortem tissue brings confounders (age, post-mortem interval, RNA
   quality) that this analysis does not model.
 
-## What would make this work
+## Future work
 
-The question needs more samples. Larger AD RNA-seq cohorts such as the AMP-AD
+Larger AD RNA-seq cohorts such as the AMP-AD
 studies (ROSMAP, Mayo, MSBB) have hundreds of samples, and analysing one of
 them with DESeq2 or limma-voom would be the natural next step.
 

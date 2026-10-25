@@ -57,10 +57,8 @@ hubs = optional_table(RESULTS / "hub_genes.csv")
 if go is None and kegg is None and hubs is None:
     st.header("Enrichment and network analysis")
     st.info(
-        "These outputs were removed because they were built from a gene "
-        "ranking produced before the FDR bug was fixed. Rerun "
-        "gene_annotation.py, go_enrichment.py, kegg_enrichment.py and "
-        "string_network.py to regenerate them as exploratory results."
+        "Run gene_annotation.py, go_enrichment.py, kegg_enrichment.py and "
+        "string_network.py to generate these results."
     )
 else:
     st.header("Functional enrichment (exploratory)")
